@@ -35,6 +35,27 @@ public class ASN1ObjectIdentifier implements DERParseable<ASN1ObjectIdentifier>,
         }
     }
 
+    public ASN1ObjectIdentifier(String dotted) throws ASN1Exception {
+        this(parseComponents(dotted));
+    }
+
+    public static ASN1ObjectIdentifier of(String dotted) {
+        try {
+            return new ASN1ObjectIdentifier(dotted);
+        } catch (ASN1Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static long[] parseComponents(String dotted) {
+        String[] parts = dotted.split("\\.");
+        long[] comps = new long[parts.length];
+        for (int i = 0; i < parts.length; i++) {
+            comps[i] = Long.parseLong(parts[i]);
+        }
+        return comps;
+    }
+
     private void writeSubidentifier(long value, List<Byte> buffer) {
         if (value == 0) {
             buffer.add((byte) 0);
